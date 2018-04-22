@@ -445,13 +445,13 @@ pyi_pylib_start_python(ARCHIVE_STATUS *status)
         /* sys.path = [base_library, mainpath] */
         strncpy(pypath, status->mainpath, strlen(status->mainpath));
         strncat(pypath, PYI_SEPSTR, strlen(PYI_SEPSTR));
-        strncat(pypath, "base_library.zip", strlen("base_library.zip"));
+        strncat(pypath, "library.zip", strlen("library.zip"));
         strncat(pypath, PYI_PATHSEPSTR, strlen(PYI_PATHSEPSTR));
         strncat(pypath, status->mainpath, strlen(status->mainpath));
     };
 
     /*
-     * On Python 3, we must set sys.path to have base_library.zip before
+     * On Python 3, we must set sys.path to have library.zip before
      * calling Py_Initialize as it needs `encodings` and other modules.
      */
     if (!is_py2) {

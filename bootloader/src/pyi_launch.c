@@ -512,8 +512,14 @@ pyi_launch_initialize(ARCHIVE_STATUS * status)
     OSStatus returnCode = TransformProcessType(&psn,
                                                kProcessTransformToForegroundApplication);
 #elif defined(_WIN32)
+    char default_manifest[] = "app.manifest";
     char * manifest;
     manifest = pyi_arch_get_option(status, "pyi-windows-manifest-filename");
+    
+    if (manifest == NULL)
+    {
+        manifest = default_manifest;
+    }
 
     if (NULL != manifest) {
         manifest = pyi_path_join(NULL, status->mainpath, manifest);

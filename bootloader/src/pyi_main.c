@@ -42,6 +42,7 @@ pyi_main(int argc, char * argv[])
     char executable[PATH_MAX];
     char homepath[PATH_MAX];
     char archivefile[PATH_MAX];
+    char homepathlib[PATH_MAX];
     int rc = 0;
     char *extractionpath = NULL;
     wchar_t * dllpath_w;
@@ -88,6 +89,15 @@ pyi_main(int argc, char * argv[])
 
     pyi_unsetenv("_MEIPASS2");
 
+    if (strlen(homepath) > PATH_MAX - 6) {
+        VS("LOADER: homepathlib would exceed PATH_MAX\n");
+        return -1;
+    }    
+    strcpy(homepathlib,homepath);
+    strcat(homepathlib,"\\libs");
+    
+    extractionpath = (extractionpath ? extractionpath : homepathlib);
+    
     VS("LOADER: _MEIPASS2 is %s\n", (extractionpath ? extractionpath : "NULL"));
 
     if (pyi_arch_setup(archive_status, homepath, &executable[strlen(homepath)])) {
