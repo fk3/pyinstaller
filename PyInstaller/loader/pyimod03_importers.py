@@ -645,10 +645,30 @@ class CExtensionImporter(object):
     def __init__(self):
         # Cache directory content for faster module lookup without
         # file system access.
-        files = pyi_os_path.os_listdir(SYS_PREFIX)
-        self._file_cache = set(files)
+        self._file_cache = {}
+        self._checked_path = set()
+        self.scan_directory(SYS_PREFIX)
+    
+    def scan_directory(self, dir):
+        self._checked_path.add(dir)
+        try:
+            files = pyi_os_path.os_listdir(dir)
+            for file in files:
+                self._file_cache[file] = pyi_os_path.os_path_join(dir, file)
+        except:
+            pass
 
-    def find_module(self, fullname, path=None):
+    def rescan_directories(self):
+        base_dir = SYS_PREFIX
+        if (base_dir[-1] in r'\/'):
+            base_dir = base_dir[:-1]
+        if (base_dir[-4:].lower() == 'libs'):
+            base_dir = base_dir[:-4]
+        for path in sys.path:
+            if (not (path in self._checked_path)) and (base_dir.lower() in path.lower()):
+                self.scan_directory(path)
+
+    def find_module(self, fullname, path=None):  
         # Deprecated in Python 3.4, see PEP-451
         imp_lock()
         module_loader = None  # None means - no module found by this importer.
@@ -658,6 +678,13 @@ class CExtensionImporter(object):
             if fullname + ext in self._file_cache:
                 module_loader = self
                 break
+                
+        if module_loader == None:
+            self.rescan_directories()
+            for ext in EXTENSION_SUFFIXES:
+                if fullname + ext in self._file_cache:
+                    module_loader = self
+                    break            
 
         imp_unlock()
         return module_loader
@@ -699,14 +726,14 @@ class CExtensionImporter(object):
                 if module is None:
                     # Python 3 implementation.
                     for ext in EXTENSION_SUFFIXES:
-                        filename = pyi_os_path.os_path_join(SYS_PREFIX, fullname + ext)
                         # Test if a file exists.
                         # Cannot use os.path.exists. Use workaround with function open().
                         # No exception means that a file exists.
                         try:
+                            filename = self._file_cache[fullname + ext]
                             with open(filename):
                                 pass
-                        except IOError:
+                        except (KeyError,IOError):
                             # Continue trying new suffix.
                             continue
                         # Load module.
