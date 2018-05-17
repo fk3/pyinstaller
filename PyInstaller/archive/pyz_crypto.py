@@ -29,11 +29,11 @@ def get_crypto_hiddenimports():
     try:
         # The _AES.so module exists only in PyCrypto 2.6 and later. Try to import
         # that first.
-        modname = 'Crypto.Cipher._AES'
+        modname = 'Cryptodome.Cipher._AES'
         import_aes(modname)
     except ImportError:
         # Fallback to AES.so, which should be there in PyCrypto 2.4 and earlier.
-        modname = 'Crypto.Cipher.AES'
+        modname = 'Cryptodome.Cipher.AES'
         import_aes(modname)
     return modname
 
@@ -44,11 +44,13 @@ class PyiBlockCipher(object):
     """
     def __init__(self, key=None):
         assert type(key) is str
-        if len(key) > BLOCK_SIZE:
-            self.key = key[0:BLOCK_SIZE]
+        self.key = key
+        bkey = key.encode('utf-8')
+        if len(bkey) > BLOCK_SIZE:
+            self.bkey = bkey[0:BLOCK_SIZE]
         else:
-            self.key = key.zfill(BLOCK_SIZE)
-        assert len(self.key) == BLOCK_SIZE
+            self.bkey = bkey.zfill(BLOCK_SIZE)
+        assert len(self.bkey) == BLOCK_SIZE
 
         # Import the right AES module.
         self._aesmod = import_aes(get_crypto_hiddenimports())
@@ -61,4 +63,4 @@ class PyiBlockCipher(object):
         # The 'BlockAlgo' class is stateful, this factory method is used to
         # re-initialize the block cipher class with each call to encrypt() and
         # decrypt().
-        return self._aesmod.new(self.key, self._aesmod.MODE_CFB, iv)
+        return self._aesmod.new(self.bkey, self._aesmod.MODE_CFB, iv)

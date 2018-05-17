@@ -783,6 +783,25 @@ PY3_BASE_MODULES = {
     'traceback',  # for startup errors
     'types',
     'weakref',
+    'os',
+    'stat',
+    'ntpath',
+    'genericpath',
+    'imp',
+    'importlib',
+    'warnings',
+    'contextlib',
+    'tokenize',
+    'enum',
+    'token',
+    'ctypes',
+    'shutil',
+    'fnmatch',
+    'posixpath',
+    'subprocess',
+    'signal',
+    'threading',
+    'platform',
 }
 
 #FIXME: Reduce this pair of nested tests to "if sys.version_info >= (3, 4)".

@@ -329,7 +329,7 @@ def main(scripts, name=None, onefile=None,
         # Tries to import PyCrypto since we need it for bytecode obfuscation. Also make sure its
         # version is >= 2.4.
         try:
-            import Crypto
+            import Cryptodome
             is_version_acceptable = LooseVersion(Crypto.__version__) >= LooseVersion('2.4')
             if not is_version_acceptable:
                 logger.error('PyCrypto version must be >= 2.4, older versions are not supported.')
