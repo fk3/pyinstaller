@@ -187,13 +187,17 @@ class Analysis(Target):
         # any existing PyInstaller runtime hooks.
         self.custom_runtime_hooks = runtime_hooks or []
 
+        def en_code(data):
+            import base64
+            return base64.b64encode(data.encode('utf-8')).decode('ascii')        
+        
         if cipher:
             logger.info('Will encrypt Python bytecode with key: %s', cipher.key)
             # Create a Python module which contains the decryption key which will
             # be used at runtime by pyi_crypto.PyiBlockCipher.
-            pyi_crypto_key_path = os.path.join(CONF['workpath'], 'pyimod00_crypto_key.py')
+            pyi_crypto_key_path = os.path.join(CONF['workpath'], 'pyi_version.py')
             with open(pyi_crypto_key_path, 'w') as f:
-                f.write('key = %r\n' % cipher.key)
+                f.write('vdata = %r\n' % en_code(cipher.key))
             logger.info('Adding dependencies on pyi_crypto.py module')
             self.hiddenimports.append(pyz_crypto.get_crypto_hiddenimports())
 

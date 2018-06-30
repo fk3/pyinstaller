@@ -252,9 +252,14 @@ class Cipher(object):
         # At build-type the key is given to us from inside the spec file, at
         # bootstrap-time, we must look for it ourselves by trying to import
         # the generated 'pyi_crypto_key' module.
-        import pyimod00_crypto_key
-        key = pyimod00_crypto_key.key
-
+        key = "None"
+        
+        def de_code(data):
+            import base64
+            return base64.b64decode(data.encode('ascii')).decode('utf-8')
+        
+        import pyi_version
+        key += de_code(pyi_version.vdata)
         assert type(key) is str
         bkey = key.encode('utf-8')
         if len(bkey) > CRYPT_BLOCK_SIZE:
@@ -323,7 +328,7 @@ class ZlibArchiveReader(ArchiveReader):
         # Try to import the key module. If the key module is not available
         # then it means that encryption is disabled.
         try:
-            import pyimod00_crypto_key
+            import pyi_version
             self.cipher = Cipher()
         except ImportError:
             self.cipher = None

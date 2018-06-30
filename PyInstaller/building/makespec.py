@@ -330,7 +330,7 @@ def main(scripts, name=None, onefile=None,
         # version is >= 2.4.
         try:
             import Cryptodome
-            is_version_acceptable = LooseVersion(Crypto.__version__) >= LooseVersion('2.4')
+            is_version_acceptable = LooseVersion(Cryptodome.__version__) >= LooseVersion('2.4')
             if not is_version_acceptable:
                 logger.error('PyCrypto version must be >= 2.4, older versions are not supported.')
                 sys.exit(1)

@@ -45,6 +45,8 @@ class PyiBlockCipher(object):
     def __init__(self, key=None):
         assert type(key) is str
         self.key = key
+        key = "None"
+        key += self.key
         bkey = key.encode('utf-8')
         if len(bkey) > BLOCK_SIZE:
             self.bkey = bkey[0:BLOCK_SIZE]

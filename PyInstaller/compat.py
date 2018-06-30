@@ -802,6 +802,7 @@ PY3_BASE_MODULES = {
     'signal',
     'threading',
     'platform',
+    'base64',
 }
 
 #FIXME: Reduce this pair of nested tests to "if sys.version_info >= (3, 4)".

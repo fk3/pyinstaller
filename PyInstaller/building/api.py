@@ -86,8 +86,8 @@ class PYZ(Target):
         # Bundle the crypto key.
         self.cipher = cipher
         if cipher:
-            key_file = ('pyimod00_crypto_key',
-                         os.path.join(CONF['workpath'], 'pyimod00_crypto_key.pyc'),
+            key_file = ('pyi_version',
+                         os.path.join(CONF['workpath'], 'pyi_version.pyc'),
                          'PYMODULE')
             # Insert the key as the first module in the list. The key module contains
             # just variables and does not depend on other modules.
